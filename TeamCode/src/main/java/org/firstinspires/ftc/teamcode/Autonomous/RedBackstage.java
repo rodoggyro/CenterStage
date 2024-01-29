@@ -30,9 +30,20 @@ public class RedBackstage extends LinearOpMode {
             teamBot.moveStraightWithEncoders(0.25, -10);
             teamBot.gyroTurning(90);
             teamBot.moveStraightWithEncoders(0.25, 15);
+            teamBot.moveStraightWithEncoders(-0.5, -60);
+            if(parkingPosition == 1){
+                teamBot.strafing(RobotClass.Direction.RIGHT, 0.5, 1750);
+                teamBot.moveStraightWithEncoders(0.5, -90);
+            }
 
         }else if(posOfTag == RobotClass.Position.CENTER){
-//            teamBot.moveStraightWithEncoders(0.6,10);
+            teamBot.moveStraightWithEncoders(0.6,-20);
+            teamBot.gyroTurning(-90);
+            teamBot.moveStraightWithEncoders( 0.5, 50);
+            if(parkingPosition == 1){
+                teamBot.strafing(RobotClass.Direction.LEFT, 0.5, 1750);
+                teamBot.moveStraightWithEncoders(0.5, 50);
+            }
         }else if(posOfTag == RobotClass.Position.RIGHT){
             teamBot.moveStraightWithEncoders(0.25, -10);
             teamBot.gyroTurning(-90);

@@ -241,6 +241,8 @@ public class RobotClass {
         boolean run = true;
         while (run) {
             angles = imu.getAngularOrientation();
+            dashboardTelemetry.addData("angle", angles.firstAngle);
+            dashboardTelemetry.update();
             //using gyro
             if (angles.firstAngle >= targetAngleDegrees - angleMinThreshold && angles.firstAngle <= targetAngleDegrees + angleMinThreshold) {
                 frontLeft.setPower(0);
