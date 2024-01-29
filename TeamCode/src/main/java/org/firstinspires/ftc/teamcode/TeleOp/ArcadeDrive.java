@@ -94,7 +94,7 @@ public class ArcadeDrive extends LinearOpMode {
             frontRight.setPower(turn);
             backRight.setPower(turn);
             
-            if (timer.time() > 120 && !endgame) {
+            if (timer.time() > 90 && !endgame) {
                 gamepad1.rumble(0.75, 0.75, 1500);
                 endgame = true;
             }
