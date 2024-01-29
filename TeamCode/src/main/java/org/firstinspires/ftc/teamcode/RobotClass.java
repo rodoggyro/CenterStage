@@ -12,16 +12,21 @@ package org.firstinspires.ftc.teamcode;
 
 import static java.lang.Thread.sleep;
 
+import com.acmerobotics.dashboard.FtcDashboard;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.Servo;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.BuiltinCameraDirection;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.Acceleration;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.vision.VisionPortal;
 
@@ -35,16 +40,31 @@ public class RobotClass {
     //initializing variables
     private LinearOpMode myOpMode = null;
 
-    //defining motor variables
+    //initializing motor variables
     public DcMotor frontLeft;
     public DcMotor frontRight;
     public DcMotor backLeft;
     public DcMotor backRight;
+    
     public BNO055IMU imu;
     public Orientation angles;
+    
+    public Servo intakeDoor;
+    public DistanceSensor leftDistanceSensor;
+    public DistanceSensor rightDistanceSensor;
+    
+    FtcDashboard dashboard = FtcDashboard.getInstance();
+    Telemetry dashboardTelemetry = dashboard.getTelemetry();
 
     public AprilTagProcessor aprilTag;
     public VisionPortal visionPortal;
+    
+    // Creating Enum for position of team prop
+    public enum Position {
+        LEFT,
+        RIGHT,
+        CENTER
+    }
 
     public RobotClass(LinearOpMode opmode) {
         myOpMode = opmode;
@@ -60,9 +80,14 @@ public class RobotClass {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-
-        //initializing camera
-//        initCamera(hardwareMap);
+        
+        //initializing sensors
+        initSensors(hardwareMap);
+    
+        
+        
+        //initializing servos
+//        intakeDoor = hardwareMap.get(Servo.class, "intakeDoor");
     }
 
     //initalizing motors
@@ -102,8 +127,13 @@ public class RobotClass {
         while(!imu.isGyroCalibrated()){
             sleep(10);
         }
-        myOpMode.telemetry.addData("Status", imu.isGyroCalibrated());
-        myOpMode.telemetry.update();
+        dashboardTelemetry.addData("Status", imu.isGyroCalibrated());
+        dashboardTelemetry.update();
+    }
+    
+    private void initSensors(HardwareMap hardwareMap){
+        leftDistanceSensor = hardwareMap.get(DistanceSensor.class, "left");
+        rightDistanceSensor = hardwareMap.get(DistanceSensor.class, "right");
     }
 
     //initializing camera
@@ -258,50 +288,38 @@ public class RobotClass {
     }
     public void strafing(Direction direction, double power, int timeInMs) throws InterruptedException {
         if (direction == Direction.LEFT) {
-            frontLeft.setPower(power);
-            frontRight.setPower(power);
-            backLeft.setPower(-power);
-            backRight.setPower(-power);
-        } else if (direction == Direction.RIGHT) {
             frontLeft.setPower(-power);
-            frontRight.setPower(-power);
             backLeft.setPower(power);
+            frontRight.setPower(-power);
             backRight.setPower(power);
+        } else if (direction == Direction.RIGHT) {
+            frontLeft.setPower(power);
+            backLeft.setPower(-power);
+            frontRight.setPower(power);
+            backRight.setPower(-power);
         } else {
-            myOpMode.telemetry.addData("Error", "Invalid direction");
-            myOpMode.telemetry.update();
+            dashboardTelemetry.addData("Error", "Invalid direction");
+            dashboardTelemetry.update();
         }
         sleep(timeInMs);
         stopMotors();
     }
 
     //Using AprilTag to find the team prop
-    public int findTeamProp(int tagID) {
-        //initializes current detection variable
-        List<AprilTagDetection> currentDetections = aprilTag.getDetections();
-
-        //Instantiates ROI objects
-        //TODO: Define ROIs
-        RegionOfInterest leftROI = new RegionOfInterest(0, 0);
-        RegionOfInterest centerROI = new RegionOfInterest(0, 0);
-        RegionOfInterest rightROI = new RegionOfInterest(0, 0);
-
-        //goes through a for loop of all detections and will search for the id 502.
-        for (AprilTagDetection detection : currentDetections) {
-            if (detection.id == tagID) {
-                if((detection.ftcPose.x > leftROI.leftBound) ||(detection.ftcPose.x < leftROI.rightBound)){
-                    return 1;
-                } else if ((detection.ftcPose.x > rightROI.leftBound) ||(detection.ftcPose.x < rightROI.rightBound)){
-                    return 3;
-                } else if ((detection.ftcPose.x > centerROI.leftBound) ||(detection.ftcPose.x < centerROI.rightBound)){
-                    return 2;
-                } else {
-                    return 4;
-                }
-            } else {
-                return 4;
-            }
+    public Position findTeamProp() {
+        double distanceLeft = leftDistanceSensor.getDistance(DistanceUnit.CM);
+        double distanceRight = rightDistanceSensor.getDistance(DistanceUnit.CM);
+        
+        dashboardTelemetry.addData("Distance to the left", distanceLeft);
+        dashboardTelemetry.addData("Distance to the right", distanceRight);
+        dashboardTelemetry.update();
+        
+        if (distanceLeft < 10) {
+            return Position.LEFT;
+        } else if (distanceRight < 10) {
+            return Position.RIGHT;
+        } else {
+            return Position.CENTER;
         }
-        return 0;
     }
 }
