@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import java.lang.Math;
 
@@ -19,6 +20,11 @@ public class ArcadeDrive extends LinearOpMode {
     
     Servo deployer;
     DcMotor winch;
+    
+    Servo launcher;
+    
+    // Setting variable for enabling endgame functions
+    boolean endgame = false;
 
     public void runOpMode(){
         //Assigning configuration name to variable (for frontLeft, backLeft, frontRight, backRight)
@@ -29,17 +35,26 @@ public class ArcadeDrive extends LinearOpMode {
 
         deployer = hardwareMap.get(Servo.class, "deployer");
         winch = hardwareMap.get(DcMotor.class, "winch");
+        
+        launcher = hardwareMap.get(Servo.class, "launcher");
 
         //setting direction of motors
         frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
         backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
 
+        // Creating new elapsed time object for timer
+        ElapsedTime timer = new ElapsedTime();
         
-        //setting initial position of the deployer servo
+        //setting initial position of servos
         deployer.setPosition(0.55);
+        
+        launcher.setPosition(0);
         
         //Waiting for Start button to be pressed
         waitForStart();
+        
+        //starting timer
+        timer.reset();
 
         //Looping while the opmode is running
         double throttle = 0;
@@ -78,19 +93,32 @@ public class ArcadeDrive extends LinearOpMode {
             backLeft.setPower(-turn);
             frontRight.setPower(turn);
             backRight.setPower(turn);
+            
+            if (timer.time() > 120 && !endgame) {
+                gamepad1.rumble(0.75, 0.75, 1500);
+                endgame = true;
+            }
 
-            //raising of the hanging mechanism
-            if (gamepad2.a) {
-                winch.setPower(1);
-            } else if (gamepad2.b) {
-                winch.setPower(-1);
-            } else {
-                winch.setPower(0);
+            if (endgame) {
+                //raising of the hanging mechanism
+                if (gamepad2.a) {
+                    winch.setPower(1);
+                } else if (gamepad2.b) {
+                    winch.setPower(-1);
+                } else {
+                    winch.setPower(0);
+                }
+    
+                if (gamepad2.dpad_up) {
+                    deployer.setPosition(0.17);
+                }
+    
+                if (gamepad2.left_bumper) {
+                    launcher.setPosition(1);
+                }
             }
             
-            if (gamepad2.dpad_up) {
-                deployer.setPosition(0.17);
-            }
+            
             
             telemetry.addData("deployer position", deployer.getPosition());
             telemetry.update();
