@@ -316,9 +316,9 @@ public class RobotClass {
         dashboardTelemetry.addData("Distance to the right", distanceRight);
         dashboardTelemetry.update();
         
-        if (distanceLeft < 10) {
+        if (distanceLeft < 13) {
             return Position.LEFT;
-        } else if (distanceRight < 10) {
+        } else if (distanceRight < 13) {
             return Position.RIGHT;
         } else {
             return Position.CENTER;

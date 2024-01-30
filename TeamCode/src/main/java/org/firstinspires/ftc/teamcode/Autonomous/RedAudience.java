@@ -30,10 +30,12 @@ public class RedAudience extends LinearOpMode {
             teamBot.moveStraightWithEncoders(0.25, -10);
             teamBot.gyroTurning(90);
             teamBot.moveStraightWithEncoders(0.25, 15);
-            teamBot.moveStraightWithEncoders(-0.5, -60);
+            teamBot.moveStraightWithEncoders(-0.5, -20);
+            teamBot.gyroTurning(0);
             if(parkingPosition == 1){
-                teamBot.strafing(RobotClass.Direction.RIGHT, 0.5, 1750);
-                teamBot.moveStraightWithEncoders(0.5, -90);
+                teamBot.moveStraightWithEncoders(0.5, 60);
+                teamBot.gyroTurning(90);
+                teamBot.moveStraightWithEncoders(0.5, -255);
             }
             
         }else if(posOfTag == RobotClass.Position.CENTER){
@@ -51,8 +53,10 @@ public class RedAudience extends LinearOpMode {
             teamBot.moveStraightWithEncoders(0.25, 15);
             teamBot.moveStraightWithEncoders(0.25, -20);
             if(parkingPosition == 1){
-                teamBot.strafing(RobotClass.Direction.LEFT, 0.5, 1750);
-                teamBot.moveStraightWithEncoders(0.5, 100);
+                teamBot.gyroTurning(0);
+                teamBot.moveStraightWithEncoders(0.5, 30);
+                teamBot.gyroTurning(90);
+                teamBot.moveStraightWithEncoders(1, -255);
             }
         }else{
             teamBot.moveStraightWithEncoders(0.25,-98);
