@@ -54,7 +54,7 @@ public class RedAudience extends LinearOpMode {
             teamBot.moveStraightWithEncoders(0.25, -20);
             if(parkingPosition == 1){
                 teamBot.gyroTurning(0);
-                teamBot.moveStraightWithEncoders(0.5, 30);
+                teamBot.moveStraightWithEncoders(0.5, 50);
                 teamBot.gyroTurning(90);
                 teamBot.moveStraightWithEncoders(1, -255);
             }
