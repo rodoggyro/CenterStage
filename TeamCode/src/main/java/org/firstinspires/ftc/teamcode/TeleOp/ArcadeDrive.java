@@ -24,7 +24,7 @@ public class ArcadeDrive extends LinearOpMode {
     Servo launcher;
     
     // Setting variable for enabling endgame functions
-    boolean endgame = false;
+    boolean endgame = true;
 
     public void runOpMode(){
         //Assigning configuration name to variable (for frontLeft, backLeft, frontRight, backRight)
@@ -41,6 +41,8 @@ public class ArcadeDrive extends LinearOpMode {
         //setting direction of motors
         frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
         backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
+        
+        winch.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         // Creating new elapsed time object for timer
         ElapsedTime timer = new ElapsedTime();
@@ -59,14 +61,12 @@ public class ArcadeDrive extends LinearOpMode {
         //Looping while the opmode is running
         double throttle = 0;
         double turn = 0;
-        boolean strafeR = false;
-        boolean strafeL = false;
+        double strafing = 0;
         while (opModeIsActive()){
             //defining driving variables (throttle = moving)
             throttle = -gamepad1.left_stick_y;
             turn = gamepad1.right_stick_x;
-            strafeR = gamepad1.right_bumper;
-            strafeL = gamepad1.left_bumper;
+            strafing = gamepad1.left_stick_x;
 
 
             //setting power for forward-backward movement
@@ -76,23 +76,17 @@ public class ArcadeDrive extends LinearOpMode {
             backRight.setPower(throttle);
 
             //setting up strafing
-            if(strafeR) {
-                frontLeft.setPower(-0.75);
-                backLeft.setPower(0.75);
-                frontRight.setPower(0.75);
-                backRight.setPower(-0.75);
-            } else if (strafeL) {
-                frontLeft.setPower(0.75);
-                backLeft.setPower(-0.75);
-                frontRight.setPower(-0.75);
-                backRight.setPower(0.75);
-            }
+            frontLeft.setPower(strafing);
+            backLeft.setPower(-strafing);
+            frontRight.setPower(strafing);
+            backRight.setPower(-strafing);
+            
 
             //setting power for turning
-            frontLeft.setPower(-turn);
-            backLeft.setPower(-turn);
-            frontRight.setPower(turn);
-            backRight.setPower(turn);
+            frontLeft.setPower(turn);
+            backLeft.setPower(turn);
+            frontRight.setPower(-turn);
+            backRight.setPower(-turn);
             
             if (timer.time() > 90 && !endgame) {
                 gamepad1.rumble(0.75, 0.75, 1500);
@@ -101,19 +95,19 @@ public class ArcadeDrive extends LinearOpMode {
 
             if (endgame) {
                 //raising of the hanging mechanism
-                if (gamepad2.a) {
-                    winch.setPower(1);
-                } else if (gamepad2.b) {
-                    winch.setPower(-1);
+                if (gamepad1.left_trigger > 0) {
+                    winch.setPower(-gamepad1.left_trigger);
+                } else if (gamepad1.right_trigger > 0) {
+                    winch.setPower(gamepad1.right_trigger);
                 } else {
                     winch.setPower(0);
                 }
     
-                if (gamepad2.dpad_up) {
+                if (gamepad1.b) {
                     deployer.setPosition(0.17);
                 }
     
-                if (gamepad2.left_bumper) {
+                if (gamepad1.a) {
                     launcher.setPosition(1);
                 }
             }
