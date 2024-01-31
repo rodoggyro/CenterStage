@@ -1,11 +1,14 @@
 package org.firstinspires.ftc.teamcode.TeleOp;
 
+import com.acmerobotics.dashboard.FtcDashboard;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
+
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 import java.lang.Math;
 
@@ -24,7 +27,9 @@ public class ArcadeDrive extends LinearOpMode {
     Servo launcher;
     
     // Setting variable for enabling endgame functions
-    boolean endgame = true;
+    boolean endgame = false;
+    FtcDashboard dashboard = FtcDashboard.getInstance();
+    Telemetry dashboardTelemetry = dashboard.getTelemetry();
 
     public void runOpMode(){
         //Assigning configuration name to variable (for frontLeft, backLeft, frontRight, backRight)
@@ -112,8 +117,13 @@ public class ArcadeDrive extends LinearOpMode {
                 }
             }
             
+            if (gamepad1.back){
+                endgame = true;
+            }
             
             
+            dashboardTelemetry.addData("time", timer.time());
+            dashboardTelemetry.update();
             telemetry.addData("deployer position", deployer.getPosition());
             telemetry.update();
         }
