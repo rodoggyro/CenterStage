@@ -7,6 +7,9 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.ElapsedTime;
+
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
@@ -27,8 +30,10 @@ public class ArcadeDrive extends LinearOpMode {
     
     Servo launcher;
     
-    DistanceSensor leftDistanceSensor;
-    DistanceSensor rightDistanceSensor;
+    // Setting variable for enabling endgame functions
+    boolean endgame = false;
+    FtcDashboard dashboard = FtcDashboard.getInstance();
+    Telemetry dashboardTelemetry = dashboard.getTelemetry();
 
     public void runOpMode(){
         //Assigning configuration name to variable (for frontLeft, backLeft, frontRight, backRight)
@@ -40,21 +45,27 @@ public class ArcadeDrive extends LinearOpMode {
         deployer = hardwareMap.get(Servo.class, "deployer");
         winch = hardwareMap.get(DcMotor.class, "winch");
         
-        leftDistanceSensor = hardwareMap.get(DistanceSensor.class, "left");
-        rightDistanceSensor = hardwareMap.get(DistanceSensor.class, "right");
-        
         launcher = hardwareMap.get(Servo.class, "launcher");
 
         //setting direction of motors
         frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
         backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
-
         
-        //setting initial position of the deployer servo
+        winch.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        // Creating new elapsed time object for timer
+        ElapsedTime timer = new ElapsedTime();
+        
+        //setting initial position of servos
         deployer.setPosition(0.55);
         
         launcher.setPosition(0);
         
+        //Waiting for Start button to be pressed
+        waitForStart();
+        
+        //starting timer
+        timer.reset();
         //Initializing FTC Dashboard
         FtcDashboard dashboard = FtcDashboard.getInstance();
         Telemetry dashboardTelemetry = dashboard.getTelemetry();
@@ -70,14 +81,12 @@ public class ArcadeDrive extends LinearOpMode {
         //Looping while the opmode is running
         double throttle = 0;
         double turn = 0;
-        boolean strafeR = false;
-        boolean strafeL = false;
+        double strafing = 0;
         while (opModeIsActive()){
             //defining driving variables (throttle = moving)
             throttle = -gamepad1.left_stick_y;
             turn = gamepad1.right_stick_x;
-            strafeR = gamepad1.right_bumper;
-            strafeL = gamepad1.left_bumper;
+            strafing = gamepad1.left_stick_x;
 
 
             //setting power for forward-backward movement
@@ -87,45 +96,50 @@ public class ArcadeDrive extends LinearOpMode {
             backRight.setPower(throttle);
 
             //setting up strafing
-            if(strafeR) {
-                frontLeft.setPower(0.75);
-                backLeft.setPower(-0.75);
-                frontRight.setPower(0.75);
-                backRight.setPower(-0.75);
-            } else if (strafeL) {
-                frontLeft.setPower(-0.75);
-                backLeft.setPower(0.75);
-                frontRight.setPower(-0.75);
-                backRight.setPower(0.75);
-            }
+            frontLeft.setPower(strafing);
+            backLeft.setPower(-strafing);
+            frontRight.setPower(strafing);
+            backRight.setPower(-strafing);
 
             //setting power for turning
             frontLeft.setPower(turn);
             backLeft.setPower(turn);
             frontRight.setPower(-turn);
             backRight.setPower(-turn);
+            
+            if (timer.time() > 90 && !endgame) {
+                gamepad1.rumble(0.75, 0.75, 1500);
+                endgame = true;
+            }
 
-            //raising of the hanging mechanism
-            if (gamepad2.a) {
-                winch.setPower(1);
-            } else if (gamepad2.b) {
-                winch.setPower(-1);
-            } else {
-                winch.setPower(0);
+
+            if (endgame) {
+                //raising of the hanging mechanism
+                if (gamepad1.left_trigger > 0) {
+                    winch.setPower(-gamepad1.left_trigger);
+                } else if (gamepad1.right_trigger > 0) {
+                    winch.setPower(gamepad1.right_trigger);
+                } else {
+                    winch.setPower(0);
+                }
+    
+                if (gamepad1.b) {
+                    deployer.setPosition(0.17);
+                }
+    
+                if (gamepad1.a) {
+                    launcher.setPosition(1);
+                }
             }
             
-            if (gamepad2.dpad_up) {
-                deployer.setPosition(0.17);
+            if (gamepad1.back){
+                endgame = true;
             }
             
-            launcher.setPosition(gamepad2.left_stick_y);
-            
-//            intakeDoor.setPosition(gamepad2.left_stick_y);
-            
-            dashboardTelemetry.addData("deployer position", deployer.getPosition());
-            dashboardTelemetry.addData("left distance sensor", leftDistanceSensor.getDistance(DistanceUnit.CM));
-            dashboardTelemetry.addData("right distance sensor", rightDistanceSensor.getDistance(DistanceUnit.CM));
+            dashboardTelemetry.addData("time", timer.time());
             dashboardTelemetry.update();
+            telemetry.addData("deployer position", deployer.getPosition());
+            telemetry.update();
         }
     }
 }
