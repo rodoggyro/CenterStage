@@ -5,10 +5,14 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 import java.lang.Math;
 
@@ -62,6 +66,17 @@ public class ArcadeDrive extends LinearOpMode {
         
         //starting timer
         timer.reset();
+        //Initializing FTC Dashboard
+        FtcDashboard dashboard = FtcDashboard.getInstance();
+        Telemetry dashboardTelemetry = dashboard.getTelemetry();
+    
+        dashboardTelemetry.addLine("Robot Initialized");
+        dashboardTelemetry.update();
+        
+        //Waiting for Start button to be pressed
+        waitForStart();
+        
+        dashboardTelemetry.clear();
 
         //Looping while the opmode is running
         double throttle = 0;
@@ -85,7 +100,6 @@ public class ArcadeDrive extends LinearOpMode {
             backLeft.setPower(-strafing);
             frontRight.setPower(strafing);
             backRight.setPower(-strafing);
-            
 
             //setting power for turning
             frontLeft.setPower(turn);
@@ -97,6 +111,7 @@ public class ArcadeDrive extends LinearOpMode {
                 gamepad1.rumble(0.75, 0.75, 1500);
                 endgame = true;
             }
+
 
             if (endgame) {
                 //raising of the hanging mechanism
@@ -120,7 +135,6 @@ public class ArcadeDrive extends LinearOpMode {
             if (gamepad1.back){
                 endgame = true;
             }
-            
             
             dashboardTelemetry.addData("time", timer.time());
             dashboardTelemetry.update();
