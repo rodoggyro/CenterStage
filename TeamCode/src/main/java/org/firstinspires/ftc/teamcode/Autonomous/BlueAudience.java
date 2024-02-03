@@ -52,7 +52,7 @@ public class BlueAudience extends LinearOpMode {
                 teamBot.gyroTurning(-90);
                 teamBot.moveStraightWithEncoders(1, -255);
             } else if (parkingPosition ==2) {
-                teamBot.moveStraightWithEncoders( 0.5, -65);
+                teamBot.moveStraightWithEncoders( 0.5, -70);
                 teamBot.gyroTurning(-90);
                 teamBot.moveStraightWithEncoders(0.5, -255);
             }
