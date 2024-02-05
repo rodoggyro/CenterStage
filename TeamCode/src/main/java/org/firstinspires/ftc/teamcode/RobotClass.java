@@ -49,7 +49,7 @@ public class RobotClass {
     public BNO055IMU imu;
     public Orientation angles;
     
-    public Servo intakeDoor;
+    public Servo launcher;
     public DistanceSensor leftDistanceSensor;
     public DistanceSensor rightDistanceSensor;
     
@@ -83,6 +83,9 @@ public class RobotClass {
         
         //initializing sensors
         initSensors(hardwareMap);
+        
+        launcher = hardwareMap.get(Servo.class, "launcher");
+        launcher.setPosition(0);
     
         
         

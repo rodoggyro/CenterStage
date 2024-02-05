@@ -5,91 +5,67 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.robot.Robot;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.RobotClass;
 
-@Autonomous()
-
+@Autonomous
 public class BlueBackstage extends LinearOpMode {
-
+    //Instantiate robot class
     RobotClass teamBot = new RobotClass(this);
-    private int posOfTag;
-
-    @Override
+    
+    int parkingPosition  = 2;
+    
     public void runOpMode() throws InterruptedException {
+        //initialize robot
         teamBot.init(hardwareMap);
-        //posOfTag = teamBot.findTeamProp(502);
-
+        
         waitForStart();
-
-        if(posOfTag == 1){
-            teamBot.moveStraightWithEncoders(0.6, 26);
-            sleep(500);
-            teamBot.gyroTurning(-90);
-            sleep(500);
-            teamBot.strafing(RobotClass.Direction.RIGHT, 0.5, 1000);
-            sleep(500);
-            teamBot.moveStraightWithEncoders(-0.6,10);
-            sleep(500);
-            //Open Purple Pixel Claw Side
-            //Shooting Purple Pixel onto SpikeMark with Intake
-            teamBot.strafing(RobotClass.Direction.LEFT, 0.6, 1000);
-            sleep(500);
-            teamBot.moveStraightWithEncoders(0.6, 100);
-            sleep(500);
-            //Open Yellow Pixel Claw Side
-            //Shooting Yellow Pixel in Backstage
-            teamBot.moveStraightWithEncoders(0.5,10);
-            sleep(500);
-
-        }else if(posOfTag == 2){
-            teamBot.moveStraightWithEncoders(0.6, 42);
-            sleep(500);
-            //Open Purple Pixel Claw Side
-            //Shooting Purple Pixel onto SpikeMark with Intake
-            teamBot.moveStraightWithEncoders(-0.6,40);
-            sleep(500);
-            teamBot.gyroTurning(-90);
-            sleep(500);
-            teamBot.moveStraightWithEncoders(0.6,100);
-            sleep(500);
-            //Open Yellow Pixel Claw Side
-            //Shooting Yellow Pixel into Backstage
-            teamBot.moveStraightWithEncoders(0.5,10);
-            sleep(500);
-
-        }else if(posOfTag == 3){
-            teamBot.moveStraightWithEncoders(0.6,26);
-            sleep(500);
+        
+        teamBot.moveStraightWithEncoders(0.6, 82);
+        RobotClass.Position posOfTag = teamBot.findTeamProp();
+        
+        
+        if(posOfTag == RobotClass.Position.LEFT){
+            teamBot.moveStraightWithEncoders(0.25, -10);
             teamBot.gyroTurning(90);
-            sleep(500);
-            teamBot.strafing(RobotClass.Direction.LEFT, 0.5, 1000);
-            sleep(500);
-            teamBot.moveStraightWithEncoders(-0.6,10);
-            sleep(500);
-            //Open Purple Pixel Claw Side
-            //Shooting Purple Pixel onto SpikeMark with Intake
-            teamBot.strafing(RobotClass.Direction.RIGHT, 0.6, 1500);
-            sleep(500);
-            teamBot.gyroTurning(180);
-            sleep(500);
-            teamBot.strafing(RobotClass.Direction.LEFT, 0.6, 500);
-            sleep(500);
-            teamBot.moveStraightWithEncoders(0.6,100);
-            sleep(500);
-            //Open Yellow Pixel Claw Side
-            //Shooting Yellow Pixel into Backstage
-            teamBot.moveStraightWithEncoders(0.5,10);
-            sleep(500);
-
+            teamBot.moveStraightWithEncoders(0.25, 15);
+            teamBot.moveStraightWithEncoders(-0.5, -20);
+            if(parkingPosition == 1){
+                teamBot.strafing(RobotClass.Direction.RIGHT, 0.5, 1750);
+                teamBot.moveStraightWithEncoders(0.5, 90);
+            } else if (parkingPosition == 2) {
+                teamBot.strafing(RobotClass.Direction.LEFT, 0.5, 1750);
+                teamBot.moveStraightWithEncoders(0.5, 90);
+            }
+    
+        }else if(posOfTag == RobotClass.Position.CENTER){
+            teamBot.moveStraightWithEncoders(0.6,-15);
+            teamBot.gyroTurning(90);
+            teamBot.moveStraightWithEncoders( 0.5, 50);
+            if(parkingPosition == 1){
+                teamBot.strafing(RobotClass.Direction.RIGHT, 0.5, 1750);
+                teamBot.moveStraightWithEncoders(0.5, 50);
+            } else if (parkingPosition == 2) {
+                teamBot.strafing(RobotClass.Direction.LEFT, 0.5, 1750);
+                teamBot.moveStraightWithEncoders(0.5, 50);
+            }
+        }else if(posOfTag == RobotClass.Position.RIGHT){
+            teamBot.moveStraightWithEncoders(0.25, -10);
+            teamBot.gyroTurning(-90);
+            teamBot.moveStraightWithEncoders(0.25, 15);
+            teamBot.moveStraightWithEncoders(0.25, -20);
+            if(parkingPosition == 1){
+                teamBot.strafing(RobotClass.Direction.LEFT, 0.5, 1750);
+                teamBot.moveStraightWithEncoders(0.5, -100);
+            } else if (parkingPosition == 2) {
+                teamBot.strafing(RobotClass.Direction.RIGHT, 0.5, 1750);
+                teamBot.moveStraightWithEncoders(0.5, -100);
+            }
         }else{
-            teamBot.moveStraightWithEncoders(0.6,-98);
+            teamBot.moveStraightWithEncoders(0.25,-98);
             //Intake shoot
-            teamBot.strafing(RobotClass.Direction.LEFT,0.5,3000);
+            teamBot.strafing(RobotClass.Direction.RIGHT,0.5,3000);
         }
-
-
-
-
     }
 }

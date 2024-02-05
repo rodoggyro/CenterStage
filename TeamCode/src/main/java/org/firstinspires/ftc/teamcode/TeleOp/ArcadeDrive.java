@@ -5,20 +5,19 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
+
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 import java.lang.Math;
 
 @TeleOp
 public class ArcadeDrive extends LinearOpMode {
-
+    
     //Initializing motor variables
     DcMotor frontLeft;
     DcMotor backLeft;
@@ -30,29 +29,31 @@ public class ArcadeDrive extends LinearOpMode {
     
     Servo launcher;
     
+    boolean isDroneLaunched = false;
+    
     // Setting variable for enabling endgame functions
     boolean endgame = false;
     FtcDashboard dashboard = FtcDashboard.getInstance();
     Telemetry dashboardTelemetry = dashboard.getTelemetry();
-
+  
     public void runOpMode(){
         //Assigning configuration name to variable (for frontLeft, backLeft, frontRight, backRight)
         frontLeft = hardwareMap.get(DcMotor.class, "frontLeft");
         backLeft = hardwareMap.get(DcMotor.class, "backLeft");
         frontRight = hardwareMap.get(DcMotor.class, "frontRight");
         backRight = hardwareMap.get(DcMotor.class, "backRight");
-
+        
         deployer = hardwareMap.get(Servo.class, "deployer");
         winch = hardwareMap.get(DcMotor.class, "winch");
         
         launcher = hardwareMap.get(Servo.class, "launcher");
-
+        
         //setting direction of motors
         frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
         backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
         
         winch.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
+        
         // Creating new elapsed time object for timer
         ElapsedTime timer = new ElapsedTime();
         
@@ -61,6 +62,7 @@ public class ArcadeDrive extends LinearOpMode {
         
         launcher.setPosition(0);
         
+
         //Waiting for Start button to be pressed
         waitForStart();
         
@@ -73,11 +75,6 @@ public class ArcadeDrive extends LinearOpMode {
         dashboardTelemetry.addLine("Robot Initialized");
         dashboardTelemetry.update();
         
-        //Waiting for Start button to be pressed
-        waitForStart();
-        
-        dashboardTelemetry.clear();
-
         //Looping while the opmode is running
         double throttle = 0;
         double turn = 0;
@@ -88,19 +85,25 @@ public class ArcadeDrive extends LinearOpMode {
             turn = gamepad1.right_stick_x;
             strafing = gamepad1.left_stick_x;
 
-
             //setting power for forward-backward movement
             frontLeft.setPower(throttle);
             backLeft.setPower(throttle);
             frontRight.setPower(throttle);
             backRight.setPower(throttle);
-
+            
             //setting up strafing
-            frontLeft.setPower(strafing);
-            backLeft.setPower(-strafing);
-            frontRight.setPower(strafing);
-            backRight.setPower(-strafing);
-
+            if (gamepad1.left_bumper) {
+                frontLeft.setPower(-0.75);
+                backLeft.setPower(0.75);
+                frontRight.setPower(-0.75);
+                backRight.setPower(0.75);
+            }else if (gamepad1.right_bumper) {
+                frontLeft.setPower(0.75);
+                backLeft.setPower(-0.75);
+                frontRight.setPower(0.75);
+                backRight.setPower(-0.75);
+            }
+          
             //setting power for turning
             frontLeft.setPower(turn);
             backLeft.setPower(turn);
@@ -111,8 +114,7 @@ public class ArcadeDrive extends LinearOpMode {
                 gamepad1.rumble(0.75, 0.75, 1500);
                 endgame = true;
             }
-
-
+            
             if (endgame) {
                 //raising of the hanging mechanism
                 if (gamepad1.left_trigger > 0) {
@@ -122,13 +124,14 @@ public class ArcadeDrive extends LinearOpMode {
                 } else {
                     winch.setPower(0);
                 }
-    
-                if (gamepad1.b) {
+                
+                if (gamepad1.b && isDroneLaunched) {
                     deployer.setPosition(0.17);
                 }
-    
+                
                 if (gamepad1.a) {
                     launcher.setPosition(1);
+                    isDroneLaunched = true;
                 }
             }
             
@@ -136,6 +139,8 @@ public class ArcadeDrive extends LinearOpMode {
                 endgame = true;
             }
             
+            
+
             dashboardTelemetry.addData("time", timer.time());
             dashboardTelemetry.update();
             telemetry.addData("deployer position", deployer.getPosition());
