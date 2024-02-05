@@ -10,6 +10,9 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
+
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+
 import java.lang.Math;
 
 @TeleOp
@@ -32,7 +35,7 @@ public class ArcadeDrive extends LinearOpMode {
     boolean endgame = false;
     FtcDashboard dashboard = FtcDashboard.getInstance();
     Telemetry dashboardTelemetry = dashboard.getTelemetry();
-    
+  
     public void runOpMode(){
         //Assigning configuration name to variable (for frontLeft, backLeft, frontRight, backRight)
         frontLeft = hardwareMap.get(DcMotor.class, "frontLeft");
@@ -59,11 +62,18 @@ public class ArcadeDrive extends LinearOpMode {
         
         launcher.setPosition(0);
         
+
         //Waiting for Start button to be pressed
         waitForStart();
         
         //starting timer
         timer.reset();
+        //Initializing FTC Dashboard
+        FtcDashboard dashboard = FtcDashboard.getInstance();
+        Telemetry dashboardTelemetry = dashboard.getTelemetry();
+    
+        dashboardTelemetry.addLine("Robot Initialized");
+        dashboardTelemetry.update();
         
         //Looping while the opmode is running
         double throttle = 0;
@@ -74,8 +84,7 @@ public class ArcadeDrive extends LinearOpMode {
             throttle = -gamepad1.left_stick_y;
             turn = gamepad1.right_stick_x;
             strafing = gamepad1.left_stick_x;
-            
-            
+
             //setting power for forward-backward movement
             frontLeft.setPower(throttle);
             backLeft.setPower(throttle);
@@ -94,8 +103,7 @@ public class ArcadeDrive extends LinearOpMode {
                 frontRight.setPower(0.75);
                 backRight.setPower(-0.75);
             }
-            //Fortnite is a very fun game that actually inspired me to make this comment
-            
+          
             //setting power for turning
             frontLeft.setPower(turn);
             backLeft.setPower(turn);
@@ -132,6 +140,7 @@ public class ArcadeDrive extends LinearOpMode {
             }
             
             
+
             dashboardTelemetry.addData("time", timer.time());
             dashboardTelemetry.update();
             telemetry.addData("deployer position", deployer.getPosition());
