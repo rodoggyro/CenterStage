@@ -26,6 +26,8 @@ public class ArcadeDrive extends LinearOpMode {
     
     Servo launcher;
     
+    boolean isDroneLaunched = false;
+    
     // Setting variable for enabling endgame functions
     boolean endgame = false;
     FtcDashboard dashboard = FtcDashboard.getInstance();
@@ -82,17 +84,17 @@ public class ArcadeDrive extends LinearOpMode {
             
             //setting up strafing
             if (gamepad1.left_bumper) {
-                frontLeft.setPower(strafing);
-                backLeft.setPower(-strafing);
-                frontRight.setPower(strafing);
-                backRight.setPower(-strafing);
+                frontLeft.setPower(-0.75);
+                backLeft.setPower(0.75);
+                frontRight.setPower(-0.75);
+                backRight.setPower(0.75);
             }else if (gamepad1.right_bumper) {
-                frontLeft.setPower(-strafing);
-                backLeft.setPower(strafing);
-                frontRight.setPower(-strafing);
-                backRight.setPower(strafing);
+                frontLeft.setPower(0.75);
+                backLeft.setPower(-0.75);
+                frontRight.setPower(0.75);
+                backRight.setPower(-0.75);
             }
-            
+            //Fortnite is a very fun game that actually inspired me to make this comment
             
             //setting power for turning
             frontLeft.setPower(turn);
@@ -115,12 +117,13 @@ public class ArcadeDrive extends LinearOpMode {
                     winch.setPower(0);
                 }
                 
-                if (gamepad1.b) {
+                if (gamepad1.b && isDroneLaunched) {
                     deployer.setPosition(0.17);
                 }
                 
                 if (gamepad1.a) {
                     launcher.setPosition(1);
+                    isDroneLaunched = true;
                 }
             }
             

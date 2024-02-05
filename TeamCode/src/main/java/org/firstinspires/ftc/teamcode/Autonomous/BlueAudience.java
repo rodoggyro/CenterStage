@@ -46,9 +46,9 @@ public class BlueAudience extends LinearOpMode {
             if (parkingPosition == 1) {
                 teamBot.moveStraightWithEncoders(0.6, 50);
                 teamBot.gyroTurning(180);
-                teamBot.moveStraightWithEncoders(0.5, 25);
+                teamBot.moveStraightWithEncoders(0.5, 23);
     
-                teamBot.moveStraightWithEncoders(0.5, -30);
+                teamBot.moveStraightWithEncoders(0.5, -32);
                 teamBot.gyroTurning(-90);
                 teamBot.moveStraightWithEncoders(1, -255);
             } else if (parkingPosition ==2) {
