@@ -19,11 +19,39 @@ public class EncoderTest extends LinearOpMode {
 
         waitForStart();
 
-        while (opModeIsActive()) {
+        while (!isStopRequested()) {
             if (gamepad1.a) {
                 robot.resetEncoders();
+                
+                double throttle = -gamepad1.left_stick_y;
+                double turn = gamepad1.right_stick_x;
+                
+                //setting power for forward-backward movement
+                robot.frontLeft.setPower(throttle);
+                robot.backLeft.setPower(throttle);
+                robot.frontRight.setPower(throttle);
+                robot.backRight.setPower(throttle);
+                
+                //setting up strafing
+                if (gamepad1.left_bumper) {
+                    robot.frontLeft.setPower(-0.75);
+                    robot.backLeft.setPower(0.75);
+                    robot.frontRight.setPower(-0.75);
+                    robot.backRight.setPower(0.75);
+                }else if (gamepad1.right_bumper) {
+                    robot.frontLeft.setPower(0.75);
+                    robot.backLeft.setPower(-0.75);
+                    robot.frontRight.setPower(0.75);
+                    robot.backRight.setPower(-0.75);
+                }
+                
+                //setting power for turning
+                robot.frontLeft.setPower(turn);
+                robot.backLeft.setPower(turn);
+                robot.frontRight.setPower(-turn);
+                robot.backRight.setPower(-turn);
             } else if (gamepad1.b) {
-                robot.robot.frontLeft.setTargetPosition(1000);
+                robot.frontLeft.setTargetPosition(1000);
                 robot.frontRight.setTargetPosition(1000);
                 robot.backLeft.setTargetPosition(1000);
                 robot.backRight.setTargetPosition(1000);
@@ -76,7 +104,6 @@ public class EncoderTest extends LinearOpMode {
                         sleep(500);
                         if (robot.odowheel.getCurrentPosition() >= target - 5 && robot.odowheel.getCurrentPosition() <= target + 5) {
                             run = false;
-                            return;
                         }
                     } else if (robot.odowheel.getCurrentPosition() >= target) {
                         if (robot.odowheel.getCurrentPosition() <= target + 100) {
