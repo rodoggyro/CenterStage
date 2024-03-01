@@ -39,7 +39,7 @@ public class RedBackstage extends LinearOpMode {
         }else if(posOfTag == RobotClass.Position.CENTER){
             teamBot.moveStraightWithEncoders(0.6,-38);
             teamBot.gyroTurning(-90);
-            teamBot.moveStraightWithEncoders( 0.5, 96);
+            teamBot.moveWithoutEncoders(0.5, 0.5, 2000);
             
         }else if(posOfTag == RobotClass.Position.RIGHT){
             teamBot.moveStraightWithEncoders(0.25, -10);
@@ -53,8 +53,15 @@ public class RedBackstage extends LinearOpMode {
         }
         
         teamBot.clawRotator.setPosition(0.65);
-        teamBot.claw.setPosition(1);
+        teamBot.claw.setPosition(0);
         
-        sleep(1000);
+        sleep(1500);
+        
+        teamBot.clawRotator.setPosition(0.25);
+        
+        teamBot.moveStraightWithEncoders(0.5, -20);
+        
+        teamBot.gyroTurning(-135);
+        teamBot.moveStraightWithEncoders(0.5, 50);
     }
 }
