@@ -22,50 +22,28 @@ public class BlueBackstage extends LinearOpMode {
         
         waitForStart();
         
-        teamBot.moveStraightWithEncoders(0.6, 82);
+        teamBot.moveStraightWithEncoders(0.2, 1000);
         RobotClass.Position posOfTag = teamBot.findTeamProp();
         
         
-        if(posOfTag == RobotClass.Position.LEFT){
-            teamBot.moveStraightWithEncoders(0.25, -10);
-            teamBot.gyroTurning(90);
-            teamBot.moveStraightWithEncoders(0.25, 15);
-            teamBot.moveStraightWithEncoders(-0.5, -20);
-            if(parkingPosition == 1){
-                teamBot.strafing(RobotClass.Direction.RIGHT, 0.5, 1750);
-                teamBot.moveStraightWithEncoders(0.5, 90);
-            } else if (parkingPosition == 2) {
-                teamBot.strafing(RobotClass.Direction.LEFT, 0.5, 1750);
-                teamBot.moveStraightWithEncoders(0.5, 90);
-            }
-    
-        }else if(posOfTag == RobotClass.Position.CENTER){
-            teamBot.moveStraightWithEncoders(0.6,-15);
-            teamBot.gyroTurning(90);
-            teamBot.moveStraightWithEncoders( 0.5, 50);
-            if(parkingPosition == 1){
-                teamBot.strafing(RobotClass.Direction.RIGHT, 0.5, 1750);
-                teamBot.moveStraightWithEncoders(0.5, 50);
-            } else if (parkingPosition == 2) {
-                teamBot.strafing(RobotClass.Direction.LEFT, 0.5, 1750);
-                teamBot.moveStraightWithEncoders(0.5, 50);
-            }
-        }else if(posOfTag == RobotClass.Position.RIGHT){
-            teamBot.moveStraightWithEncoders(0.25, -10);
-            teamBot.gyroTurning(-90);
-            teamBot.moveStraightWithEncoders(0.25, 15);
-            teamBot.moveStraightWithEncoders(0.25, -20);
-            if(parkingPosition == 1){
-                teamBot.strafing(RobotClass.Direction.LEFT, 0.5, 1750);
-                teamBot.moveStraightWithEncoders(0.5, -100);
-            } else if (parkingPosition == 2) {
-                teamBot.strafing(RobotClass.Direction.RIGHT, 0.5, 1750);
-                teamBot.moveStraightWithEncoders(0.5, -100);
-            }
-        }else{
-            teamBot.moveStraightWithEncoders(0.25,-98);
-            //Intake shoot
-            teamBot.strafing(RobotClass.Direction.RIGHT,0.5,3000);
-        }
+//        if(posOfTag == RobotClass.Position.LEFT){
+//            teamBot.moveStraightWithEncoders(0.25, -10);
+//            teamBot.gyroTurning(90);
+//            teamBot.moveStraightWithEncoders(0.25, 15);
+//            teamBot.moveStraightWithEncoders(-0.5, -20);
+//            teamBot.strafing(RobotClass.Direction.LEFT, 0.5, 2000);
+//            teamBot.moveStraightWithEncoders(0.5, 20);
+//            teamBot.strafing(RobotClass.Direction.RIGHT, 0.5, 2000);
+//        }else if(posOfTag == RobotClass.Position.CENTER){
+//            teamBot.moveStraightWithEncoders(0.6,-15);
+//            teamBot.gyroTurning(90);
+//            teamBot.moveStraightWithEncoders( 0.5, 50);
+//        }else if(posOfTag == RobotClass.Position.RIGHT){
+//            teamBot.moveStraightWithEncoders(0.25, -10);
+//            teamBot.gyroTurning(-90);
+//            teamBot.moveStraightWithEncoders(0.25, 15);
+//            teamBot.moveStraightWithEncoders(0.25, -70);
+//            teamBot.gyroTurning(180);
+//        }
     }
 }

@@ -46,12 +46,17 @@ public class RobotClass {
     public DcMotor backLeft;
     public DcMotor backRight;
     
+    public DcMotor odowheel;
+    
     public BNO055IMU imu;
     public Orientation angles;
     
     public Servo launcher;
     public DistanceSensor leftDistanceSensor;
     public DistanceSensor rightDistanceSensor;
+    
+    public Servo claw;
+    public Servo clawRotator;
     
     FtcDashboard dashboard = FtcDashboard.getInstance();
     Telemetry dashboardTelemetry = dashboard.getTelemetry();
@@ -86,6 +91,16 @@ public class RobotClass {
         
         launcher = hardwareMap.get(Servo.class, "launcher");
         launcher.setPosition(0);
+        
+        claw = hardwareMap.get(Servo.class, "claw");
+        claw.setPosition(1);
+        clawRotator = hardwareMap.get(Servo.class, "clawRotator");
+        clawRotator.setPosition(0.5);
+//
+//        visionPortal = VisionPortal.easyCreateWithDefaults(
+//                hardwareMap.get(WebcamName.class, "Webcam 1"), aprilTag);
+//
+//        aprilTag = AprilTagProcessor.easyCreateWithDefaults();
     
         
         
@@ -100,6 +115,8 @@ public class RobotClass {
         frontRight = hardwareMap.get(DcMotor.class, "frontRight");
         backLeft = hardwareMap.get(DcMotor.class, "backLeft");
         backRight = hardwareMap.get(DcMotor.class, "backRight");
+        
+        odowheel = hardwareMap.get(DcMotor.class, "parallel");
 
         frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
         backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -130,23 +147,13 @@ public class RobotClass {
         while(!imu.isGyroCalibrated()){
             sleep(10);
         }
-        dashboardTelemetry.addData("Status", imu.isGyroCalibrated());
-        dashboardTelemetry.update();
+        myOpMode.telemetry.addData("Status", imu.isGyroCalibrated());
+        myOpMode.telemetry.update();
     }
     
     private void initSensors(HardwareMap hardwareMap){
         leftDistanceSensor = hardwareMap.get(DistanceSensor.class, "left");
         rightDistanceSensor = hardwareMap.get(DistanceSensor.class, "right");
-    }
-
-    //initializing camera
-    private void initCamera(HardwareMap hardwareMap) {
-        // Create the AprilTag processor the easy way.
-        aprilTag = AprilTagProcessor.easyCreateWithDefaults();
-
-        // Create the vision portal the easy way.
-        visionPortal = VisionPortal.easyCreateWithDefaults(
-                hardwareMap.get(WebcamName.class, "Webcam 1"), aprilTag);
     }
 
     //resetting encoders
@@ -206,26 +213,17 @@ public class RobotClass {
 
         //resetting
         resetEncoders();
-
-        //setting target position of motors
-        frontLeft.setTargetPosition(target);
-        frontRight.setTargetPosition(target);
-        backLeft.setTargetPosition(target);
-        backRight.setTargetPosition(target);
-
-        frontLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        frontRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        backLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        backRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-        frontLeft.setPower(power);
-        frontRight.setPower(power);
-        backLeft.setPower(power);
-        backRight.setPower(power);
-
-        //waiting while the motors are busy
-        while (frontLeft.isBusy()){
-            sleep(50);
+        odowheel.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        odowheel.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        
+        while (odowheel.getCurrentPosition() <= cm - 15 && odowheel.getCurrentPosition() >= cm + 15) {
+            if (odowheel.getCurrentPosition() < cm) {
+                moveWithoutEncoders(power, power, 10);
+            }
+            
+            if (odowheel.getCurrentPosition() > cm) {
+                moveWithoutEncoders(-power, -power, 10);
+            }
         }
 
         //stopping all motors
@@ -327,4 +325,97 @@ public class RobotClass {
             return Position.CENTER;
         }
     }
+    
+    /**
+     * Add telemetry about AprilTag detections.
+     */
+//    private double[] telemetryAprilTag() {
+//
+//        List<AprilTagDetection> currentDetections = aprilTag.getDetections();
+//        myOpMode.telemetry.addData("# AprilTags Detected", currentDetections.size());
+//
+//        double[] position = new double[5];
+//
+//        // Step through the list of detections and display info for each one.
+//        for (AprilTagDetection detection : currentDetections) {
+//            if (detection.metadata != null) {
+//                myOpMode.telemetry.addLine(String.format("\n==== (ID %d) %s", detection.id, detection.metadata.name));
+//                myOpMode.telemetry.addLine(String.format("XYZ %6.1f %6.1f %6.1f  (inch)", detection.ftcPose.x, detection.ftcPose.y, detection.ftcPose.z));
+//                myOpMode.telemetry.addLine(String.format("PRY %6.1f %6.1f %6.1f  (deg)", detection.ftcPose.pitch, detection.ftcPose.roll, detection.ftcPose.yaw));
+//                myOpMode.telemetry.addLine(String.format("RBE %6.1f %6.1f %6.1f  (inch, deg, deg)", detection.ftcPose.range, detection.ftcPose.bearing, detection.ftcPose.elevation));
+//                position[0] = detection.ftcPose.x;
+//                position[1] = detection.ftcPose.y;
+//                position[2] = detection.ftcPose.z;
+//                position[3] = detection.ftcPose.yaw;
+//                position[4] = detection.id;
+//            } else {
+//                myOpMode.telemetry.addLine(String.format("\n==== (ID %d) Unknown", detection.id));
+//                myOpMode.telemetry.addLine(String.format("Center %6.0f %6.0f   (pixels)", detection.center.x, detection.center.y));
+//            }
+//        }   // end for() loop
+//
+//        // Add "key" information to telemetry
+//        myOpMode.telemetry.addLine("\nkey:\nXYZ = X (Right), Y (Forward), Z (Up) dist.");
+//        myOpMode.telemetry.addLine("PRY = Pitch, Roll & Yaw (XYZ Rotation)");
+//        myOpMode.telemetry.addLine("RBE = Range, Bearing & Elevation");
+//
+//        return position;
+//    }
+    
+//    public void moveToPosition() throws InterruptedException {
+//        double[] position = telemetryAprilTag();
+//        double x = position[0];
+//        double y = position[1];
+//        double z = position[2];
+//        double yaw = position[3];
+//        int id = (int) position[4];
+//
+//        int targetY = 0;
+//
+//        if(findTeamProp() == Position.LEFT && id == 1 || id == 4){
+//            while(x > 0.5 || x < -0.5){
+//                if (x > 0.5) {
+//                    strafing(Direction.LEFT, 0.5, 50);
+//                    position = telemetryAprilTag();
+//                    x = position[0];
+//                } else if (x < -0.5) {
+//                    strafing(Direction.RIGHT, 0.5, 50);
+//                    position = telemetryAprilTag();
+//                    x = position[0];
+//                }
+//            }
+//        } else if (findTeamProp() == Position.CENTER && id == 2 || id == 5){
+//            while(x > 0.5 || x < -0.5){
+//                if (x > 0.5) {
+//                    strafing(Direction.LEFT, 0.5, 50);
+//                    position = telemetryAprilTag();
+//                    x = position[0];
+//                } else if (x < -0.5) {
+//                    strafing(Direction.RIGHT, 0.5, 50);
+//                    position = telemetryAprilTag();
+//                    x = position[0];
+//                }
+//            }
+//        } else if (findTeamProp() == Position.RIGHT && id == 3 || id == 6){
+//            while(x > 0.5 || x < -0.5){
+//                if (x > 0.5) {
+//                    strafing(Direction.LEFT, 0.5, 50);
+//                    position = telemetryAprilTag();
+//                    x = position[0];
+//                } else if (x < -0.5) {
+//                    strafing(Direction.RIGHT, 0.5, 50);
+//                    position = telemetryAprilTag();
+//                    x = position[0];
+//                }
+//            }
+//        }
+//
+//        gyroTurning(yaw - imu.getAngularOrientation().firstAngle);
+//
+//        while (y > targetY + 0.5) {
+//            moveWithoutEncoders(0.5, 0.5, 50);
+//            position = telemetryAprilTag();
+//            y = position[1];
+//        }
+//    }
 }
