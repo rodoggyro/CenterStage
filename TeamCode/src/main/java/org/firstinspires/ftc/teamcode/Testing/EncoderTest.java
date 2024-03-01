@@ -16,7 +16,20 @@ public class EncoderTest extends LinearOpMode {
 
     public void runOpMode() {
         robot.init(hardwareMap);
-
+        
+        int[] encoderValues = {
+                robot.frontLeft.getCurrentPosition(),
+                robot.frontRight.getCurrentPosition(),
+                robot.backLeft.getCurrentPosition(),
+                robot.backRight.getCurrentPosition()
+        };
+        
+        telemetry.addData("Front Left", "0");
+        telemetry.addData("Front Right", "1");
+        telemetry.addData("Back Left", "2");
+        telemetry.addData("Back Right", "3");
+        telemetry.update();
+        
         waitForStart();
 
         while (!isStopRequested()) {
@@ -134,12 +147,15 @@ public class EncoderTest extends LinearOpMode {
                     robot.stopMotors();
                 }
             }
+            
+            encoderValues[0] = robot.frontLeft.getCurrentPosition();
+            encoderValues[1] = robot.frontRight.getCurrentPosition();
+            encoderValues[2] = robot.backLeft.getCurrentPosition();
+            encoderValues[3] = robot.backRight.getCurrentPosition();
 
-            telemetry.addData("Front Left", robot.frontLeft.getCurrentPosition());
-            telemetry.addData("Front Right", robot.frontRight.getCurrentPosition());
-            telemetry.addData("Back Left", robot.backLeft.getCurrentPosition());
-            telemetry.addData("Back Right", robot.backRight.getCurrentPosition());
-
+            for(int value : encoderValues) {
+                telemetry.addData("Encoder " + value, encoderValues[value]);
+            }
             telemetry.update();
         }
     }
