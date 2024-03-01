@@ -22,7 +22,7 @@ public class BlueBackstage extends LinearOpMode {
         
         waitForStart();
         
-        teamBot.moveStraightWithEncoders(0.2, 1000);
+        teamBot.moveStraightWithEncoders(0.2, 82);
         RobotClass.Position posOfTag = teamBot.findTeamProp();
         
         
