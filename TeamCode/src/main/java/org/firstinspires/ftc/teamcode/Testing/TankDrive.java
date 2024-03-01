@@ -20,8 +20,7 @@ public class TankDrive extends LinearOpMode {
         backLeft = hardwareMap.get(DcMotor.class, "backLeft");
         frontRight = hardwareMap.get(DcMotor.class, "frontRight");
         backRight = hardwareMap.get(DcMotor.class, "backRight");
-
-        //TODO: Fix directions
+        
         frontLeft.setDirection(DcMotorSimple.Direction.FORWARD);
         //Setting the direction of frontLeft to FORWARD
         backLeft.setDirection(DcMotorSimple.Direction.FORWARD);

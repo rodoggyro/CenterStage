@@ -34,6 +34,7 @@ public class EncoderTest extends LinearOpMode {
         
         waitForStart();
 
+        //TODO: Test different Encoder movement methods
         while (!isStopRequested()) {
             if (gamepad1.a) {
                 robot.resetEncoders();
@@ -92,10 +93,11 @@ public class EncoderTest extends LinearOpMode {
 
                 robot.stopMotors();
             } else if (gamepad1.x) {
+                double scaleFactor = 1.0;
                 double circumferenceCm = (double) 48 / 10;
                 double ticksPerRotation = 2000;
-                double ticksPerCm = ticksPerRotation / circumferenceCm;
-                int target = (int) Math.round(40 * ticksPerCm);
+                double ticksPerCm = ticksPerRotation/circumferenceCm;
+                int target = robot.odowheel.getCurrentPosition () + (int) Math.round(40 * ticksPerCm * scaleFactor);
                 
                 double minCorrectionPower = 0.2;
                 double maxCorrectionPower = 1.0;
@@ -156,8 +158,8 @@ public class EncoderTest extends LinearOpMode {
             encoderValues[3] = robot.backRight.getCurrentPosition();
             encoderValues[4] = robot.odowheel.getCurrentPosition();
 
-            for(int value : encoderValues) {
-                telemetry.addData("Encoder " + value, encoderValues[value]);
+            for(int i = 0; i < encoderValues.length; i++) {
+                telemetry.addData("Encoder " + i, encoderValues[i]);
             }
             telemetry.update();
         }
