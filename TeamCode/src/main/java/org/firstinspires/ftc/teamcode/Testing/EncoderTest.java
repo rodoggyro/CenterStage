@@ -21,13 +21,15 @@ public class EncoderTest extends LinearOpMode {
                 robot.frontLeft.getCurrentPosition(),
                 robot.frontRight.getCurrentPosition(),
                 robot.backLeft.getCurrentPosition(),
-                robot.backRight.getCurrentPosition()
+                robot.backRight.getCurrentPosition(),
+                robot.odowheel.getCurrentPosition()
         };
         
         telemetry.addData("Front Left", "0");
         telemetry.addData("Front Right", "1");
         telemetry.addData("Back Left", "2");
         telemetry.addData("Back Right", "3");
+        telemetry.addData("Odometer Wheel", "4");
         telemetry.update();
         
         waitForStart();
@@ -152,6 +154,7 @@ public class EncoderTest extends LinearOpMode {
             encoderValues[1] = robot.frontRight.getCurrentPosition();
             encoderValues[2] = robot.backLeft.getCurrentPosition();
             encoderValues[3] = robot.backRight.getCurrentPosition();
+            encoderValues[4] = robot.odowheel.getCurrentPosition();
 
             for(int value : encoderValues) {
                 telemetry.addData("Encoder " + value, encoderValues[value]);
