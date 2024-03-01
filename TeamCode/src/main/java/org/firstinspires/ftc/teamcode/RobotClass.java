@@ -206,14 +206,15 @@ public class RobotClass {
 
     //Moving using encoders
     public void moveStraightWithEncoders(double power, double cm) throws InterruptedException {
+        double scaleFactor = 0.320325278;
         double circumferenceCm = (double) 48 / 10;
         double ticksPerRotation = 2000;
         double ticksPerCm = ticksPerRotation / circumferenceCm;
-        int target = (int) Math.round(cm * ticksPerCm);
+        int target = (int) Math.round(cm * ticksPerCm * scaleFactor);
         
         double minCorrectionPower = 0.2;
         double maxCorrectionPower = 1.0;
-
+        
         //resetting
         resetEncoders();
         odowheel.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -225,15 +226,14 @@ public class RobotClass {
             myOpMode.telemetry.addData("Current", odowheel.getCurrentPosition());
             myOpMode.telemetry.update();
             //using gyro
-            if (odowheel.getCurrentPosition() >= target - 5 && odowheel.getCurrentPosition() <= target + 5) {
+            if (odowheel.getCurrentPosition() >= target - 15 && odowheel.getCurrentPosition() <= target + 15) {
                 frontLeft.setPower(0);
                 frontRight.setPower(0);
                 backLeft.setPower(0);
                 backRight.setPower(0);
                 sleep(500);
-                if (odowheel.getCurrentPosition() >= target - 5 && odowheel.getCurrentPosition() <= target + 5) {
+                if (odowheel.getCurrentPosition() >= target - 15 && odowheel.getCurrentPosition() <= target + 15) {
                     run = false;
-                    return;
                 }
             } else if (odowheel.getCurrentPosition() >= target) {
                 if (odowheel.getCurrentPosition() <= target + 100) {
@@ -253,7 +253,7 @@ public class RobotClass {
                     frontRight.setPower(minCorrectionPower);
                     backLeft.setPower(minCorrectionPower);
                     backRight.setPower(minCorrectionPower);
-
+                    
                 } else {
                     frontLeft.setPower(maxCorrectionPower);
                     frontRight.setPower(maxCorrectionPower);

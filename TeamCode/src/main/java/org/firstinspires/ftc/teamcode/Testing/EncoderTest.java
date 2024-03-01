@@ -93,7 +93,7 @@ public class EncoderTest extends LinearOpMode {
 
                 robot.stopMotors();
             } else if (gamepad1.x) {
-                double scaleFactor = 1.0;
+                double scaleFactor = 0.320325278;
                 double circumferenceCm = (double) 48 / 10;
                 double ticksPerRotation = 2000;
                 double ticksPerCm = ticksPerRotation/circumferenceCm;

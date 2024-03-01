@@ -29,6 +29,9 @@ public class ArcadeDrive extends LinearOpMode {
     
     Servo launcher;
     
+    Servo claw;
+    Servo clawRotator;
+    
     boolean isDroneLaunched = false;
     
     // Setting variable for enabling endgame functions
@@ -47,6 +50,11 @@ public class ArcadeDrive extends LinearOpMode {
         winch = hardwareMap.get(DcMotor.class, "winch");
         
         launcher = hardwareMap.get(Servo.class, "launcher");
+        
+        claw = hardwareMap.get(Servo.class, "claw");
+        claw.setPosition(0);
+        clawRotator = hardwareMap.get(Servo.class, "clawRotator");
+        clawRotator.setPosition(0.25);
         
         //setting direction of motors
         frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -139,11 +147,14 @@ public class ArcadeDrive extends LinearOpMode {
                 endgame = true;
             }
             
-            
+            claw.setPosition(gamepad2.left_trigger);
+            clawRotator.setPosition(gamepad2.right_trigger + 0.25);
 
             dashboardTelemetry.addData("time", timer.time());
             dashboardTelemetry.update();
             telemetry.addData("deployer position", deployer.getPosition());
+            telemetry.addData("claw", claw.getPosition());
+            telemetry.addData("claw rotator", clawRotator.getPosition());
             telemetry.update();
         }
     }
