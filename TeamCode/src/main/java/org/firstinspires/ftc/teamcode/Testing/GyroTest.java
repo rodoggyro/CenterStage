@@ -13,7 +13,6 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.teamcode.RobotClass;
 
 @TeleOp
-@Disabled
 public class GyroTest extends LinearOpMode {
 //    flags for testing
     public boolean runTurnCode = true;
@@ -34,7 +33,7 @@ public class GyroTest extends LinearOpMode {
 
             if (runTurnCode) {
                 //turn 90 degrees using gyro
-                double targetAngle = -145;
+                double targetAngle = -90;
                 if (angles.firstAngle >= targetAngle-0.5 && angles.firstAngle <= targetAngle+0.5){
                     robot.frontLeft.setPower(0);
                     robot.frontRight.setPower(0);
@@ -49,27 +48,27 @@ public class GyroTest extends LinearOpMode {
                     }
                 }else if (angles.firstAngle >= targetAngle){
                     if (angles.firstAngle <= targetAngle+10){
-                        robot.frontLeft.setPower(0.15);
-                        robot.frontRight.setPower(-0.15);
+                        robot.frontLeft.setPower(-0.15);
+                        robot.frontRight.setPower(0.15);
                         robot.backLeft.setPower(0.15);
                         robot.backRight.setPower(-0.15);
                     }else {
-                        robot.frontLeft.setPower(0.25);
-                        robot.frontRight.setPower(-0.25);
+                        robot.frontLeft.setPower(-0.25);
+                        robot.frontRight.setPower(0.25);
                         robot.backLeft.setPower(0.25);
                         robot.backRight.setPower(-0.25);
                     }
                 }else if (angles.firstAngle <= targetAngle){
                     if (angles.firstAngle >= targetAngle-10){
-                        robot.frontLeft.setPower(-0.15);
-                        robot.frontRight.setPower(0.15);
+                        robot.frontLeft.setPower(0.15);
+                        robot.frontRight.setPower(-0.15);
                         robot.backLeft.setPower(-0.15);
                         robot.backRight.setPower(0.15);
 
                     }else{
-                        robot.frontLeft.setPower(-0.25);
-                        robot.frontRight.setPower(0.25);
-                        robot.backLeft.setPower(-0.25);
+                        robot.frontLeft.setPower(0.25);
+                        robot.frontRight.setPower(-0.25);
+                        robot.backLeft.setPower(0.25);
                         robot.backRight.setPower(0.25);
                     }
                 }

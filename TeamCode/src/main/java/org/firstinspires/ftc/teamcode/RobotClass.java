@@ -118,7 +118,7 @@ public class RobotClass {
         
         odowheel = hardwareMap.get(DcMotor.class, "parallel");
         
-        frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
+        frontRight.setDirection(DcMotorSimple.Direction.REVERSE);
         backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
         
         //setting zero power behavior to brake
@@ -194,8 +194,8 @@ public class RobotClass {
 
 
         //setting power of motors
-        frontLeft.setPower(powerLeft);
-        frontRight.setPower(powerRight);
+        frontLeft.setPower(-powerLeft);
+        frontRight.setPower(-powerRight);
         backLeft.setPower(powerLeft);
         backRight.setPower(powerRight);
         //waiting while running motors
@@ -216,22 +216,46 @@ public class RobotClass {
         double minCorrectionPower = 0.1;
         double maxCorrectionPower = 0.2;
         
-        frontLeft.setDirection(DcMotorSimple.Direction.FORWARD);
-        frontRight.setDirection(DcMotorSimple.Direction.REVERSE);
-        
         //resetting
         resetEncoders();
         odowheel.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         odowheel.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         
+        double power1 = 0;
         boolean run = true;
         while (run) {
-            if (odowheel.getCurrentPosition() < target - 15) {
-                frontLeft.setPower(1 - ((double) odowheel.getCurrentPosition() / target));
+            myOpMode.telemetry.addData("power", power1);
+            myOpMode.telemetry.addData("target", target);
+            myOpMode.telemetry.addData("current", odowheel.getCurrentPosition());
+            myOpMode.telemetry.update();
+            if (odowheel.getCurrentPosition()  > target - 15 && odowheel.getCurrentPosition() < target + 15) {
+                power1 = 0;
+                run = false;
+                return;
+            } else {
+                if (cm > 0) {
+                    if (odowheel.getCurrentPosition() - target > 0) {
+                        power1 = -1 - ((double) odowheel.getCurrentPosition() / target);
+                    } else {
+                        power1 = 1 - ((double) odowheel.getCurrentPosition() / target);
+                    }
+                } else {
+                    if (odowheel.getCurrentPosition() - target < 0){
+                        power1 = ((double) odowheel.getCurrentPosition() / target) - 1;
+                    } else {
+                        power1 = -1 - ((double) odowheel.getCurrentPosition() / target);
+                    }
+                }
             }
+            
+            frontLeft.setPower(-power1);
+            frontRight.setPower(-power1);
+            backLeft.setPower(power1);
+            backRight.setPower(power1);
         }
+        
     }
-
+    
     //turning with gyro code
     public void gyroTurning(double targetAngleDegrees) throws InterruptedException {
         double angleMinThreshold = 0.5;
@@ -256,26 +280,26 @@ public class RobotClass {
                 }
             } else if (angles.firstAngle >= targetAngleDegrees) {
                 if (angles.firstAngle <= targetAngleDegrees + angleMaxThreshold) {
-                    frontLeft.setPower(minCorrectionPower);
-                    frontRight.setPower(-minCorrectionPower);
+                    frontLeft.setPower(-minCorrectionPower);
+                    frontRight.setPower(minCorrectionPower);
                     backLeft.setPower(minCorrectionPower);
                     backRight.setPower(-minCorrectionPower);
                 } else {
-                    frontLeft.setPower(maxCorrectionPower);
-                    frontRight.setPower(-maxCorrectionPower);
+                    frontLeft.setPower(-maxCorrectionPower);
+                    frontRight.setPower(maxCorrectionPower);
                     backLeft.setPower(maxCorrectionPower);
                     backRight.setPower(-maxCorrectionPower);
                 }
             } else if (angles.firstAngle <= targetAngleDegrees) {
                 if (angles.firstAngle >= targetAngleDegrees - angleMaxThreshold) {
-                    frontLeft.setPower(-minCorrectionPower);
-                    frontRight.setPower(minCorrectionPower);
+                    frontLeft.setPower(minCorrectionPower);
+                    frontRight.setPower(-minCorrectionPower);
                     backLeft.setPower(-minCorrectionPower);
                     backRight.setPower(minCorrectionPower);
 
                 } else {
-                    frontLeft.setPower(-maxCorrectionPower);
-                    frontRight.setPower(maxCorrectionPower);
+                    frontLeft.setPower(maxCorrectionPower);
+                    frontRight.setPower(-maxCorrectionPower);
                     backLeft.setPower(-maxCorrectionPower);
                     backRight.setPower(maxCorrectionPower);
                 }
@@ -290,13 +314,13 @@ public class RobotClass {
     }
     public void strafing(Direction direction, double power, int timeInMs) throws InterruptedException {
         if (direction == Direction.LEFT) {
-            frontLeft.setPower(-power);
-            backLeft.setPower(power);
+            frontLeft.setPower(power);
+            backLeft.setPower(-power);
             frontRight.setPower(-power);
             backRight.setPower(power);
         } else if (direction == Direction.RIGHT) {
-            frontLeft.setPower(power);
-            backLeft.setPower(-power);
+            frontLeft.setPower(-power);
+            backLeft.setPower(power);
             frontRight.setPower(power);
             backRight.setPower(-power);
         } else {
@@ -312,9 +336,9 @@ public class RobotClass {
         double distanceLeft = leftDistanceSensor.getDistance(DistanceUnit.CM);
         double distanceRight = rightDistanceSensor.getDistance(DistanceUnit.CM);
         
-        dashboardTelemetry.addData("Distance to the left", distanceLeft);
-        dashboardTelemetry.addData("Distance to the right", distanceRight);
-        dashboardTelemetry.update();
+        myOpMode.telemetry.addData("Distance to the left", distanceLeft);
+        myOpMode.telemetry.addData("Distance to the right", distanceRight);
+        myOpMode.telemetry.update();
         
         if (distanceLeft < 13) {
             return Position.LEFT;
