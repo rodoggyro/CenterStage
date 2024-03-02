@@ -32,7 +32,7 @@ public class RedBackstage extends LinearOpMode {
             teamBot.moveStraightWithEncoders(0.25, 15);
             teamBot.moveStraightWithEncoders(0.5, -50);
             teamBot.gyroTurning(0);
-            teamBot.moveStraightWithEncoders(0.5, 5);
+            teamBot.moveStraightWithEncoders(0.5, -5);
             teamBot.gyroTurning(-90);
             teamBot.moveWithoutEncoders(0.5, 0.5, 1500);
 
@@ -50,7 +50,7 @@ public class RedBackstage extends LinearOpMode {
             teamBot.gyroTurning(-135);
             teamBot.moveStraightWithEncoders(0.5, 50);
             teamBot.gyroTurning(-45);
-            teamBot.moveStraightWithEncoders(0.5, 15);
+            teamBot.moveStraightWithEncoders(0.5, 10);
             teamBot.gyroTurning(-90);
             teamBot.moveWithoutEncoders(0.5, 0.5, 1500);
         }

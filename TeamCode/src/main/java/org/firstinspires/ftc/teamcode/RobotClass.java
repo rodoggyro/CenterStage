@@ -340,9 +340,9 @@ public class RobotClass {
         myOpMode.telemetry.addData("Distance to the right", distanceRight);
         myOpMode.telemetry.update();
         
-        if (distanceLeft < 13) {
+        if (distanceLeft < 18) {
             return Position.LEFT;
-        } else if (distanceRight < 13) {
+        } else if (distanceRight < 18) {
             return Position.RIGHT;
         } else {
             return Position.CENTER;
