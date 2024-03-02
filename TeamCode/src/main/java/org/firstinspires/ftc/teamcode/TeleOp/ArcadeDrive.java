@@ -101,13 +101,13 @@ public class ArcadeDrive extends LinearOpMode {
             
             //setting up strafing
             if (gamepad1.left_bumper) {
-                frontLeft.setPower(-0.75);
-                backLeft.setPower(0.75);
+                frontLeft.setPower(0.75);
+                backLeft.setPower(-0.75);
                 frontRight.setPower(-0.75);
                 backRight.setPower(0.75);
             }else if (gamepad1.right_bumper) {
-                frontLeft.setPower(0.75);
-                backLeft.setPower(-0.75);
+                frontLeft.setPower(-0.75);
+                backLeft.setPower(0.75);
                 frontRight.setPower(0.75);
                 backRight.setPower(-0.75);
             }
@@ -124,6 +124,7 @@ public class ArcadeDrive extends LinearOpMode {
             }
             
             if (endgame) {
+                clawRotator.setPosition(0.5);
                 //raising of the hanging mechanism
                 if (gamepad1.left_trigger > 0) {
                     winch.setPower(-gamepad1.left_trigger);
@@ -146,9 +147,6 @@ public class ArcadeDrive extends LinearOpMode {
             if (gamepad1.back){
                 endgame = true;
             }
-            
-            claw.setPosition(gamepad2.left_trigger);
-            clawRotator.setPosition(gamepad2.right_trigger + 0.25);
 
             dashboardTelemetry.addData("time", timer.time());
             dashboardTelemetry.update();

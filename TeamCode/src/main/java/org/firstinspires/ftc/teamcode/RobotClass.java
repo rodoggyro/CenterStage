@@ -117,9 +117,10 @@ public class RobotClass {
         backRight = hardwareMap.get(DcMotor.class, "backRight");
         
         odowheel = hardwareMap.get(DcMotor.class, "parallel");
-
+        
         frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
         backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
+        
         //setting zero power behavior to brake
         frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -212,8 +213,11 @@ public class RobotClass {
         double ticksPerCm = ticksPerRotation / circumferenceCm;
         int target = (int) Math.round(cm * ticksPerCm * scaleFactor);
         
-        double minCorrectionPower = 0.2;
-        double maxCorrectionPower = 1.0;
+        double minCorrectionPower = 0.1;
+        double maxCorrectionPower = 0.2;
+        
+        frontLeft.setDirection(DcMotorSimple.Direction.FORWARD);
+        frontRight.setDirection(DcMotorSimple.Direction.REVERSE);
         
         //resetting
         resetEncoders();
@@ -222,46 +226,9 @@ public class RobotClass {
         
         boolean run = true;
         while (run) {
-            myOpMode.telemetry.addData("Target", target);
-            myOpMode.telemetry.addData("Current", odowheel.getCurrentPosition());
-            myOpMode.telemetry.update();
-            //using gyro
-            if (odowheel.getCurrentPosition() >= target - 15 && odowheel.getCurrentPosition() <= target + 15) {
-                frontLeft.setPower(0);
-                frontRight.setPower(0);
-                backLeft.setPower(0);
-                backRight.setPower(0);
-                sleep(500);
-                if (odowheel.getCurrentPosition() >= target - 15 && odowheel.getCurrentPosition() <= target + 15) {
-                    run = false;
-                }
-            } else if (odowheel.getCurrentPosition() >= target) {
-                if (odowheel.getCurrentPosition() <= target + 100) {
-                    frontLeft.setPower(-minCorrectionPower);
-                    frontRight.setPower(-minCorrectionPower);
-                    backLeft.setPower(-minCorrectionPower);
-                    backRight.setPower(-minCorrectionPower);
-                } else {
-                    frontLeft.setPower(-maxCorrectionPower);
-                    frontRight.setPower(-maxCorrectionPower);
-                    backLeft.setPower(-maxCorrectionPower);
-                    backRight.setPower(-maxCorrectionPower);
-                }
-            } else if (odowheel.getCurrentPosition() <= target) {
-                if (odowheel.getCurrentPosition() >= target - 100) {
-                    frontLeft.setPower(minCorrectionPower);
-                    frontRight.setPower(minCorrectionPower);
-                    backLeft.setPower(minCorrectionPower);
-                    backRight.setPower(minCorrectionPower);
-                    
-                } else {
-                    frontLeft.setPower(maxCorrectionPower);
-                    frontRight.setPower(maxCorrectionPower);
-                    backLeft.setPower(maxCorrectionPower);
-                    backRight.setPower(maxCorrectionPower);
-                }
+            if (odowheel.getCurrentPosition() < target - 15) {
+                frontLeft.setPower(1 - ((double) odowheel.getCurrentPosition() / target));
             }
-            stopMotors();
         }
     }
 
@@ -269,8 +236,8 @@ public class RobotClass {
     public void gyroTurning(double targetAngleDegrees) throws InterruptedException {
         double angleMinThreshold = 0.5;
         double angleMaxThreshold = 10;
-        double minCorrectionPower = 0.2;
-        double maxCorrectionPower = 2.0;
+        double minCorrectionPower = 0.1;
+        double maxCorrectionPower = 0.5;
         boolean run = true;
         while (run) {
             angles = imu.getAngularOrientation();
@@ -313,8 +280,8 @@ public class RobotClass {
                     backRight.setPower(maxCorrectionPower);
                 }
             }
-            stopMotors();
         }
+        stopMotors();
     }
 
     //strafing class with power and direction as parameters

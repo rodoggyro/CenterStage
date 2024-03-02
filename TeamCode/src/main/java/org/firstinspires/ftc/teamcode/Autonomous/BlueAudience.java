@@ -22,61 +22,22 @@ public class BlueAudience extends LinearOpMode {
         
         waitForStart();
         
-        teamBot.moveStraightWithEncoders(0.6, 82);
+        teamBot.moveStraightWithEncoders(0.6, 72);
         RobotClass.Position posOfTag = teamBot.findTeamProp();
         
-        
         if(posOfTag == RobotClass.Position.LEFT){
-            teamBot.moveStraightWithEncoders(0.25, -10);
             teamBot.gyroTurning(90);
             teamBot.moveStraightWithEncoders(0.25, 15);
             teamBot.moveStraightWithEncoders(-0.5, -20);
             teamBot.gyroTurning(0);
-            if(parkingPosition == 1){
-                teamBot.moveStraightWithEncoders(0.5, 60);
-                teamBot.gyroTurning(-90);
-                teamBot.moveStraightWithEncoders(0.5, -255);
-            } else if (parkingPosition == 2) {
-                teamBot.moveStraightWithEncoders(0.5, -65);
-                teamBot.gyroTurning(-90);
-                teamBot.moveStraightWithEncoders(1, -255);
-            }
     
         }else if(posOfTag == RobotClass.Position.CENTER){
-            if (parkingPosition == 1) {
-                teamBot.moveStraightWithEncoders(0.6, 50);
-                teamBot.gyroTurning(180);
-                teamBot.moveStraightWithEncoders(0.5, 23);
-    
-                teamBot.moveStraightWithEncoders(0.5, -32);
-                teamBot.gyroTurning(-90);
-                teamBot.moveStraightWithEncoders(1, -255);
-            } else if (parkingPosition ==2) {
-                teamBot.moveStraightWithEncoders( 0.5, -70);
-                teamBot.gyroTurning(-90);
-                teamBot.moveStraightWithEncoders(0.5, -255);
-            }
+            teamBot.moveStraightWithEncoders(0.5, 10);
         }else if(posOfTag == RobotClass.Position.RIGHT){
-            teamBot.moveStraightWithEncoders(0.25, -10);
             teamBot.gyroTurning(-90);
-            teamBot.moveStraightWithEncoders(0.25, 15);
-            teamBot.moveStraightWithEncoders(0.25, -20);
-            if(parkingPosition == 1){
-                teamBot.gyroTurning(0);
-                teamBot.moveStraightWithEncoders(0.5, 65);
-                teamBot.gyroTurning(-90);
-                teamBot.moveStraightWithEncoders(1, -255);
-            } else if (parkingPosition == 2) {
-                teamBot.gyroTurning(0);
-                teamBot.strafing(RobotClass.Direction.RIGHT, 0.5, 250);
-                teamBot.moveStraightWithEncoders(0.5, -55);
-                teamBot.gyroTurning(-90);
-                teamBot.moveStraightWithEncoders(1, -255);
-            }
-        }else{
-            teamBot.moveStraightWithEncoders(0.25,-98);
-            //Intake shoot
-            teamBot.strafing(RobotClass.Direction.RIGHT,0.5,3000);
+            teamBot.moveStraightWithEncoders(0.25, 10);
+            teamBot.moveStraightWithEncoders(0.25, -15);
+            
         }
     }
 }
