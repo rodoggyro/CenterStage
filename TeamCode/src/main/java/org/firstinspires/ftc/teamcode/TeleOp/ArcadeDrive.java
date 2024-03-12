@@ -52,7 +52,7 @@ public class ArcadeDrive extends LinearOpMode {
         launcher = hardwareMap.get(Servo.class, "launcher");
         
         claw = hardwareMap.get(Servo.class, "claw");
-        claw.setPosition(0);
+        claw.setPosition(1);
         clawRotator = hardwareMap.get(Servo.class, "clawRotator");
         clawRotator.setPosition(0.25);
         
@@ -146,6 +146,14 @@ public class ArcadeDrive extends LinearOpMode {
             
             if (gamepad1.back){
                 endgame = true;
+            }
+            
+            if (gamepad1.x) {
+                clawRotator.setPosition(0.65);
+                sleep(1500);
+                claw.setPosition(0);
+                sleep(500);
+                clawRotator.setPosition(0.25);
             }
 
             dashboardTelemetry.addData("time", timer.time());

@@ -24,6 +24,7 @@ public class RedBackstage extends LinearOpMode {
         
         teamBot.moveStraightWithEncoders(0.6, 72);
         RobotClass.Position posOfTag = teamBot.findTeamProp();
+        teamBot.clawRotator.setPosition(0.5);
 //        teamBot.moveStraightWithEncoders(1, 10);
 
         if(posOfTag == RobotClass.Position.LEFT){

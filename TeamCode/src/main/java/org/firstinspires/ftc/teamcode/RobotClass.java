@@ -95,7 +95,7 @@ public class RobotClass {
         claw = hardwareMap.get(Servo.class, "claw");
         claw.setPosition(1);
         clawRotator = hardwareMap.get(Servo.class, "clawRotator");
-        clawRotator.setPosition(0.5);
+        clawRotator.setPosition(0.25);
 //
 //        visionPortal = VisionPortal.easyCreateWithDefaults(
 //                hardwareMap.get(WebcamName.class, "Webcam 1"), aprilTag);
@@ -253,7 +253,6 @@ public class RobotClass {
             backLeft.setPower(power1);
             backRight.setPower(power1);
         }
-        
     }
     
     //turning with gyro code
